@@ -20,7 +20,7 @@ class HTMLNode:
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
 
 class LeafNode(HTMLNode):
-    def __init__(self, tag, value, children=None, props=None):
+    def __init__(self, tag: str | None, value: str, props: dict[str, str] | None = None) -> None:
         super().__init__(tag, value, None, props)
 
     def to_html(self):
