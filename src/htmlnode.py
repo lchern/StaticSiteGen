@@ -10,12 +10,10 @@ class HTMLNode:
 
     def props_to_html(self):
         result = ""
-        result_text = list(result)
         if self.props == None or self.props == "":
             return ""
         for key in self.props:
-            result_text.append(f' {key}="{self.props[key]}"')
-        result = "".join(result_text)
+            result += f' {key}="{self.props[key]}"'
         return result
 
     def __repr__(self) -> str:
@@ -36,3 +34,19 @@ class LeafNode(HTMLNode):
 
     def __repr__(self) -> str:
         return f"LeafNode({self.tag}, {self.value}, {self.props})"
+
+class ParentNode(HTMLNode):
+    def __init__(self, tag, children, props=None):
+        super().__init__(tag, None, children, props)
+
+    def to_html(self):
+        result = ""
+        if self.tag is None:
+            raise ValueError("Invalid HTML: tag is missing")
+        if self.children is None:
+            raise ValueError("Invalid HTML: children are missing in Parent node")
+        for child in self.children:
+            result += child.to_html()
+        if self.props is None:
+            return f"<{self.tag}>{result}</{self.tag}>"
+        return f"<{self.tag}{self.props_to_html()}>{result}</{self.tag}>"
