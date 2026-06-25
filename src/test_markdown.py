@@ -24,6 +24,53 @@ This is the same paragraph on a new line
             ],
         )
 
+    def test_block_to_block_type_code(self):
+        md = "```\n1. Some Text\n2. Some more text\n3. Even more text\n```"
+
+        block_type = block_to_block_type(md)
+        self.assertEqual(
+            block_type, BlockType.CODE
+        )
+
+    def test_block_to_block_type_heading(self):
+        md = "#### Heading text"
+
+        block_type = block_to_block_type(md)
+        self.assertEqual(
+            block_type, BlockType.HEADING
+        )
+
+    def test_block_to_block_type_QUOTE(self):
+        md = ">Some wise words"
+
+        block_type = block_to_block_type(md)
+        self.assertEqual(
+            block_type, BlockType.QUOTE
+        )
+
+    def test_block_to_block_type_unordered_list(self):
+        md = "- Some Text\n- Some more text\n- Even more text"
+
+        block_type = block_to_block_type(md)
+        self.assertEqual(
+            block_type, BlockType.UNORDERED_LIST
+        )
+
+    def test_block_to_block_type_ordered_list(self):
+        md = "1. Some Text\n2. Some more text\n3. Even more text"
+
+        block_type = block_to_block_type(md)
+        self.assertEqual(
+            block_type, BlockType.ORDERED_LIST
+        )
+
+    def test_block_to_block_type_just_paragraph(self):
+        md = "Some text with **bold** and _italic_ words in it."
+
+        block_type = block_to_block_type(md)
+        self.assertEqual(
+            block_type, BlockType.PARAGRAPH
+        )
 
 if __name__ == "__main__":
     unittest.main()
