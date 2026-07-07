@@ -1,8 +1,8 @@
 import os
+from pathlib import Path
 
 from htmlnode import *
 from markdown import *
-from pathlib import Path
 
 
 def extract_title(markdown):
@@ -12,9 +12,10 @@ def extract_title(markdown):
             return line[2:]
     raise Exception("ERROR: Level 1 header is missing in the markdown")
 
+
 # DEPRECATED
 #
-#def generate_page(from_path, template_path, dest_path):
+# def generate_page(from_path, template_path, dest_path):
 #    print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 #
 #    with open(from_path) as file:
@@ -29,8 +30,11 @@ def extract_title(markdown):
 #    with open(dest_path, "w") as file:
 #        file.write(template_content.replace("{{ Title }}", title).replace("{{ Content }}", html_string))
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
-    print(f"Generating pages recursively from {dir_path_content} to {dest_dir_path} using {template_path}")
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
+    print(
+        f"Generating pages recursively from {dir_path_content} to {dest_dir_path} using {template_path}, basepath is {basepath}"
+    )
     contents = os.listdir(dir_path_content)
     for item in contents:
         if os.path.isfile(os.path.join(dir_path_content, item)):
@@ -44,7 +48,19 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
                 html_string = markdown_to_html_node(from_content).to_html()
                 title = extract_title(from_content)
                 os.makedirs(dest_dir_path, exist_ok=True)
-                with open(os.path.join(dest_dir_path, item.replace(".md", ".html")), "w") as file:
-                    file.write(template_content.replace("{{ Title }}", title).replace("{{ Content }}", html_string))
+                with open(
+                    os.path.join(dest_dir_path, item.replace(".md", ".html")), "w"
+                ) as file:
+                    file.write(
+                        template_content.replace("{{ Title }}", title)
+                        .replace("{{ Content }}", html_string)
+                        .replace('href="/', 'href="{basepath}')
+                        .replace('src="/', 'src="{basepath}')
+                    )
         else:
-            generate_pages_recursive(os.path.join(dir_path_content, item), template_path, os.path.join(dest_dir_path, item))
+            generate_pages_recursive(
+                os.path.join(dir_path_content, item),
+                template_path,
+                os.path.join(dest_dir_path, item),
+                basepath,
+            )
