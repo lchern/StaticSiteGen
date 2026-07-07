@@ -54,8 +54,8 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
                     file.write(
                         template_content.replace("{{ Title }}", title)
                         .replace("{{ Content }}", html_string)
-                        .replace('href="/', 'href="{basepath}')
-                        .replace('src="/', 'src="{basepath}')
+                        .replace('href="/', f'href="{basepath}')
+                        .replace('src="/', f'src="{basepath}')
                     )
         else:
             generate_pages_recursive(
